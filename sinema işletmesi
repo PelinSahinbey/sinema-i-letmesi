@@ -1,0 +1,180 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class CinemaSystem {
+    private ArrayList<String> filmAdlari = new ArrayList<>(); // Film adları
+    private ArrayList<String> filmSureleri = new ArrayList<>(); // Film süreleri
+    private ArrayList<String> filmTurleri = new ArrayList<>(); // Film türleri
+    private ArrayList<String> musteriAdlari = new ArrayList<>(); // Müşteri adları
+    private ArrayList<String> musteriEmail = new ArrayList<>(); // Müşteri email adresleri
+    private ArrayList<ArrayList<String>> biletler = new ArrayList<>(); // Müşteri ile film eşleştirmeleri
+
+    // Film ekleme fonksiyonu
+    public void filmEkle() {
+        if (filmAdlari.size() >= 10) {
+            System.out.println("Maalesef, film kapasitesine ulaştık. Maksimum 10 film ekleyebilirsiniz. :)");
+            return;
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nHadi yeni bir film ekleyelim! 🎬");
+        System.out.print("Film adı: ");
+        String filmAdi = scanner.nextLine();
+        System.out.print("Film süresi (dakika): ");
+        String filmSuresi = scanner.nextLine();
+        System.out.print("Film türü: ");
+        String filmTuru = scanner.nextLine();
+
+        filmAdlari.add(filmAdi);
+        filmSureleri.add(filmSuresi);
+        filmTurleri.add(filmTuru);
+
+        System.out.println("\n" + filmAdi + " filmi başarıyla eklendi. Harika bir seçim! 😊");
+    }
+
+    // Film listeleme fonksiyonu
+    public void filmListele() {
+        if (filmAdlari.isEmpty()) {
+            System.out.println("Henüz eklenmiş bir film yok. Lütfen önce film ekleyin. 🎥");
+            return;
+        }
+
+        System.out.println("\nİşte harika filmlerimiz:");
+        for (int i = 0; i < filmAdlari.size(); i++) {
+            System.out.println((i + 1) + ". " + filmAdlari.get(i) + " - Süre: " + filmSureleri.get(i) + " dk - Tür: " + filmTurleri.get(i));
+        }
+    }
+
+    // Müşteri ekleme fonksiyonu
+    public void musteriEkle() {
+        if (musteriAdlari.size() >= 20) {
+            System.out.println("Üzgünüm, müşteri kapasitesine ulaştık. Maksimum 20 müşteri kaydedebilirsiniz. 🙁");
+            return;
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nYeni bir müşteri kaydederek başlayalım! 👤");
+        System.out.print("Müşteri adı: ");
+        String musteriAdi = scanner.nextLine();
+        System.out.print("Müşteri email adresi: ");
+        String musteriEmailAdresi = scanner.nextLine();
+
+        musteriAdlari.add(musteriAdi);
+        musteriEmail.add(musteriEmailAdresi);
+        biletler.add(new ArrayList<>()); // Yeni müşteri için bilet listesi
+
+        System.out.println("\nHoş geldiniz, " + musteriAdi + "! Kayıdınız başarıyla tamamlandı. 🎉");
+    }
+
+    // Müşteri listeleme fonksiyonu
+    public void musteriListele() {
+        if (musteriAdlari.isEmpty()) {
+            System.out.println("Henüz kaydedilmiş bir müşteri yok. Lütfen önce müşteri kaydedin. 🙂");
+            return;
+        }
+
+        System.out.println("\nBizimle olan müşterilerimiz:");
+        for (int i = 0; i < musteriAdlari.size(); i++) {
+            System.out.println((i + 1) + ". " + musteriAdlari.get(i) + " - Email: " + musteriEmail.get(i));
+        }
+    }
+
+    // Bilet oluşturma fonksiyonu
+    public void biletOlustur() {
+        if (musteriAdlari.isEmpty() || filmAdlari.isEmpty()) {
+            System.out.println("Lütfen önce film ve müşteri ekleyin. Film ve müşteri olmadan bilet oluşturulamaz. 😊");
+            return;
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nHangi müşteri için bilet oluşturmak istersiniz?");
+        musteriListele();
+        System.out.print("\nBir müşteri seçin (numara girin): ");
+        int musteriIndex = scanner.nextInt() - 1;
+        if (musteriIndex < 0 || musteriIndex >= musteriAdlari.size()) {
+            System.out.println("Geçersiz müşteri seçimi.");
+            return;
+        }
+
+        System.out.println("\nHangi filmi izlemek istersiniz?");
+        filmListele();
+        System.out.print("\nBir film seçin (numara girin): ");
+        int filmIndex = scanner.nextInt() - 1;
+        if (filmIndex < 0 || filmIndex >= filmAdlari.size()) {
+            System.out.println("Geçersiz film seçimi.");
+            return;
+        }
+
+        // Bilet kaydını oluştur
+        biletler.get(musteriIndex).add(filmAdlari.get(filmIndex));
+        System.out.println("\n" + musteriAdlari.get(musteriIndex) + " için " + filmAdlari.get(filmIndex) + " filmi başarıyla kaydedildi. 🍿");
+    }
+
+    // Biletleri listeleme fonksiyonu
+    public void biletListele() {
+        if (biletler.isEmpty()) {
+            System.out.println("\nHenüz herhangi bir bilet kaydedilmemiş. Belki de bir film izlemek istersiniz? 🎥");
+            return;
+        }
+
+        System.out.println("\nİşte kaydedilmiş biletler:");
+        for (int i = 0; i < biletler.size(); i++) {
+            if (!biletler.get(i).isEmpty()) {
+                System.out.println("\n" + musteriAdlari.get(i) + "'nın biletleri:");
+                for (String film : biletler.get(i)) {
+                    System.out.println(" - " + film);
+                }
+            } else {
+                System.out.println(musteriAdlari.get(i) + " için bilet bulunmamaktadır. :)");
+            }
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        CinemaSystem system = new CinemaSystem();
+        
+        while (true) {
+            System.out.println("\n--- Sinema Sistemi ---");
+            System.out.println("1. Film Ekle");
+            System.out.println("2. Film Listele");
+            System.out.println("3. Müşteri Ekle");
+            System.out.println("4. Müşteri Listele");
+            System.out.println("5. Bilet Oluştur");
+            System.out.println("6. Bilet Listele");
+            System.out.println("7. Çıkış");
+            
+            System.out.print("\nLütfen bir seçenek girin (1-7): ");
+            int secim = scanner.nextInt();
+            scanner.nextLine();  // Clear the buffer
+
+            switch (secim) {
+                case 1:
+                    system.filmEkle();
+                    break;
+                case 2:
+                    system.filmListele();
+                    break;
+                case 3:
+                    system.musteriEkle();
+                    break;
+                case 4:
+                    system.musteriListele();
+                    break;
+                case 5:
+                    system.biletOlustur();
+                    break;
+                case 6:
+                    system.biletListele();
+                    break;
+                case 7:
+                    System.out.println("\nÇıkıyor... Görüşmek üzere! 😊");
+                    return;
+                default:
+                    System.out.println("\nGeçersiz seçenek! Lütfen 1 ile 7 arasında bir sayı girin. 😉");
+            }
+        }
+    }
+}
